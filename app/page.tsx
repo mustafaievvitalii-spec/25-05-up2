@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const trustBadges = [
@@ -19,12 +19,21 @@ const steps = [
   'Доставка за кордон',
 ];
 
-const docs = [
-  'Фото посвідчення водія',
-  'Закордонний паспорт',
-  'Внутрішній паспорт або ID-карта',
-  'ІПН',
-  'Прописка',
+const docs = ['Фото посвідчення водія', 'Закордонний паспорт', 'Внутрішній паспорт або ID-карта', 'ІПН', 'Прописка'];
+
+const faqItems = [
+  {
+    q: 'Чи можна відновити права, якщо вони старого зразка (ламіновані)?',
+    a: 'Так, але це вимагає додаткової верифікації через паперові архіви МВС. Ми допомагаємо з цим процесом.',
+  },
+  {
+    q: 'Скільки часу займає доставка пластику за кордон?',
+    a: 'Офіційний випуск займає до 5 робочих днів, а міжнародна доставка в межах ЄС — від 7 до 14 днів.',
+  },
+  {
+    q: "Чи з'явиться нове посвідчення в Дії?",
+    a: 'Так, оскільки процедура повністю офіційна, нове посвідчення автоматично підтягнеться в Дію одразу після внесення в базу МВС.',
+  },
 ];
 
 function formatTime(totalSeconds: number) {
@@ -40,6 +49,7 @@ function formatTime(totalSeconds: number) {
 
 export default function Page() {
   const [secondsLeft, setSecondsLeft] = useState(2 * 60 * 60);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -69,8 +79,8 @@ export default function Page() {
             Відновлення посвідчення водія дистанційно. Для українців за кордоном.
           </h1>
           <p className="mt-6 max-w-3xl text-base text-slate-300 sm:text-lg">
-            Допомагаємо внести посвідчення в Дію, перевипустити пластикове посвідчення та виправити помилки
-            в базі МВС без необхідності приїжджати в Україну.
+            Допомагаємо внести посвідчення в Дію, перевипустити пластикове посвідчення та виправити помилки в базі
+            МВС без необхідності приїжджати в Україну.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -110,21 +120,24 @@ export default function Page() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 lg:grid-cols-2 lg:px-10">
-        {[{
-          name: 'Електронний',
-          subtitle: 'Е-посвідчення в Дії',
-          oldPrice: '€220',
-          newPrice: '€149',
-          items: ['Аудит ситуації', 'Оновлення даних у реєстрах', 'Супровід до появи в Дії'],
-          popular: false,
-        }, {
-          name: 'Пластик + Доставка',
-          subtitle: 'Офіційний пластик МВС з доставкою за кордон',
-          oldPrice: '€420',
-          newPrice: '€299',
-          items: ['Усе з пакету “Електронний”', 'Перевипуск пластику', 'Контроль отримання в Україні', 'Міжнародна доставка в руки'],
-          popular: true,
-        }].map((plan, i) => (
+        {[
+          {
+            name: 'Електронний',
+            subtitle: 'Е-посвідчення в Дії',
+            oldPrice: '€220',
+            newPrice: '€149',
+            items: ['Аудит ситуації', 'Оновлення даних у реєстрах', 'Супровід до появи в Дії'],
+            popular: false,
+          },
+          {
+            name: 'Пластик + Доставка',
+            subtitle: 'Офіційний пластик МВС з доставкою за кордон',
+            oldPrice: '€420',
+            newPrice: '€299',
+            items: ['Усе з пакету “Електронний”', 'Перевипуск пластику', 'Контроль отримання в Україні', 'Міжнародна доставка в руки'],
+            popular: true,
+          },
+        ].map((plan, i) => (
           <motion.article
             key={plan.name}
             initial={{ opacity: 0, y: 30 }}
@@ -204,7 +217,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
+      <section className="mx-auto max-w-7xl px-6 pb-16 lg:px-10">
         <div className="grid gap-6 lg:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -234,12 +247,147 @@ export default function Page() {
               У яких випадках ми НЕ допомагаємо
             </h3>
             <p className="mt-4 text-rose-100/95">
-              Ми не займаємося виготовленням прав з нуля, додаванням категорій, відновленням після ст.130 КУпАП
-              або підробкою документів. Лише офіційні процедури, що не вимагають складання іспитів.
+              Ми не займаємося виготовленням прав з нуля, додаванням категорій, відновленням після ст.130 КУпАП або
+              підробкою документів. Лише офіційні процедури, що не вимагають складання іспитів.
             </p>
           </motion.div>
         </div>
       </section>
+
+      <section className="mx-auto max-w-5xl px-6 pb-20 lg:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="rounded-3xl border border-white/15 bg-white/5 p-7 backdrop-blur-2xl"
+        >
+          <h2 className="text-3xl font-semibold">Часті запитання</h2>
+          <div className="mt-6 space-y-3">
+            {faqItems.map((item, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div key={item.q} className="overflow-hidden rounded-2xl border border-white/15 bg-[#0d1220]/70">
+                  <button
+                    onClick={() => setOpenFaq((prev) => (prev === idx ? null : idx))}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                  >
+                    <span className="font-medium text-slate-100">{item.q}</span>
+                    <motion.svg
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25 }}
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 shrink-0 text-cyan-200"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </motion.svg>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: 'easeInOut' }}
+                      >
+                        <p className="border-t border-white/10 px-5 py-4 text-slate-300">{item.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-6 pb-20 lg:px-10">
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="rounded-3xl border border-white/15 bg-white/5 p-7 backdrop-blur-2xl"
+        >
+          <h2 className="text-3xl font-semibold">Залиште заявку</h2>
+          <p className="mt-2 text-slate-300">Ми зв&apos;яжемося з вами для безкоштовної первинної перевірки ситуації.</p>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <label className="flex flex-col gap-2 sm:col-span-2">
+              <span className="text-sm text-slate-300">Ваше ім&apos;я</span>
+              <input
+                type="text"
+                placeholder="Введіть ваше ім'я"
+                className="rounded-xl border border-white/15 bg-[#090e19]/90 px-4 py-3 text-slate-100 outline-none ring-cyan-300/50 transition focus:ring"
+              />
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-sm text-slate-300">Код країни</span>
+              <select className="rounded-xl border border-white/15 bg-[#090e19]/90 px-4 py-3 text-slate-100 outline-none ring-cyan-300/50 transition focus:ring">
+                <option>+380 (UA)</option>
+                <option>+48 (PL)</option>
+                <option>+49 (DE)</option>
+                <option>+420 (CZ)</option>
+                <option>+39 (IT)</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="text-sm text-slate-300">Номер телефону</span>
+              <input
+                type="tel"
+                placeholder="XX XXX XX XX"
+                className="rounded-xl border border-white/15 bg-[#090e19]/90 px-4 py-3 text-slate-100 outline-none ring-cyan-300/50 transition focus:ring"
+              />
+            </label>
+
+            <label className="flex flex-col gap-2 sm:col-span-2">
+              <span className="text-sm text-slate-300">Країна перебування зараз</span>
+              <input
+                type="text"
+                placeholder="Наприклад: Польща"
+                className="rounded-xl border border-white/15 bg-[#090e19]/90 px-4 py-3 text-slate-100 outline-none ring-cyan-300/50 transition focus:ring"
+              />
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-xl bg-gradient-to-r from-cyan-400 via-indigo-400 to-cyan-300 px-6 py-3 font-semibold text-slate-950 shadow-[0_0_30px_rgba(56,189,248,0.3)] transition duration-300 hover:scale-[1.01] hover:bg-[length:200%_200%] hover:shadow-[0_0_42px_rgba(56,189,248,0.45)]"
+          >
+            Залишити заявку на безкоштовну перевірку
+          </button>
+        </motion.form>
+      </section>
+
+      <footer className="border-t border-white/10 bg-[#070b14]/80 py-10 backdrop-blur-xl">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-3 lg:px-10">
+          <div>
+            <p className="text-xl font-semibold text-cyan-200">DocExpert</p>
+            <p className="mt-2 text-sm text-slate-300">
+              Дистанційний юридичний супровід для відновлення посвідчення водія, внесення в Дію та офіційного
+              перевипуску пластику МВС з доставкою за кордон.
+            </p>
+            <p className="mt-4 text-xs text-slate-400">© 2026 DocExpert. Усі права захищено.</p>
+          </div>
+
+          <div className="text-sm text-slate-300">
+            Ми працюємо виключно в межах чинного законодавства України та регламентів МВС. Сервіс надає
+            консультаційну та супроводжувальну допомогу.
+          </div>
+
+          <div className="flex flex-col gap-3 text-sm lg:items-end">
+            <a href="#" className="text-cyan-200 transition hover:text-cyan-100">
+              Політика конфіденційності
+            </a>
+            <a href="#" className="text-cyan-200 transition hover:text-cyan-100">
+              Публічна оферта
+            </a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
