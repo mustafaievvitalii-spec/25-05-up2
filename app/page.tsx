@@ -106,11 +106,11 @@ export default function Page() {
         ))}
       </div>
 
-      <section className="mx-auto max-w-7xl px-6 pb-10 pt-16 lg:px-10">
-        <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-8 lg:p-10">
+      <section className="mx-auto max-w-7xl px-6 pb-12 pt-14 sm:pt-16 lg:px-10 lg:pb-14 lg:pt-20">
+        <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7 sm:p-8 lg:p-12">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-black px-4 py-1 text-xs uppercase tracking-[0.22em] text-[#D4FF00]"><span className="h-2 w-2 rounded-full bg-[#D4FF00]" />DocExpert - юридична допомога</p>
-          <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">Відновлення посвідчення водія дистанційно. Для українців за кордоном.</h1>
-          <p className="mt-6 max-w-3xl text-base text-[#A1A1AA] sm:text-lg">Допомагаємо внести посвідчення в Дію, перевипустити пластикове посвідчення та виправити помилки в базі МВС без необхідності приїжджати в Україну.</p>
+          <h1 className="mt-7 max-w-5xl text-4xl font-black leading-[1.05] sm:text-5xl lg:mt-8 lg:text-6xl">Водійські послуги для українців у Європі</h1>
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Допомагаємо внести посвідчення в Дію, перевипустити пластик, виправити помилки в базі МВС та пройти офіційні процедури дистанційно.</p>
 
           <div className="mt-6 flex flex-wrap gap-3">
             <a className={socialLinkClasses} href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="h-5 w-5" /></a>
@@ -126,7 +126,7 @@ export default function Page() {
             <a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 bg-black px-6 py-3 font-medium text-white transition hover:shadow-[0_0_20px_rgba(212,255,0,0.2)]">Написати у Viber</a>
           </div>
 
-          <motion.div key={secondsLeft} initial={{ opacity: 0.8, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} className="mt-8 inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-black px-4 py-2 text-sm text-[#D4FF00]"><Timer className="h-4 w-4" />Акційна ціна діє ще: {formatTime(secondsLeft)}</motion.div>
+          <motion.div key={secondsLeft} initial={{ opacity: 0.8, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#D4FF00]/55 bg-black px-7 py-4 text-base font-semibold text-[#D4FF00] shadow-[0_0_0_1px_rgba(212,255,0,0.28),0_0_34px_rgba(212,255,0,0.30)] lg:px-9 lg:py-5 lg:text-xl"><Timer className="h-6 w-6 lg:h-7 lg:w-7" />Акційна ціна діє ще: {formatTime(secondsLeft)}</motion.div>
         </motion.div>
       </section>
 
