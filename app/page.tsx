@@ -21,17 +21,17 @@ const trustBadges = [
 
 const pricingPlans: Plan[] = [
   {
-    name: 'Електронний',
+    name: 'Верифікація данних в базі МВС',
     subtitle: 'Е-посвідчення в Дії',
-    oldPrice: '€220',
-    newPrice: '€149',
+    oldPrice: '200 €',
+    newPrice: '100 €',
     items: ['Аудит ситуації', 'Оновлення даних у реєстрах', 'Супровід до появи в Дії'],
   },
   {
     name: 'Пластик + Доставка',
     subtitle: 'Офіційний пластик МВС з доставкою за кордон',
-    oldPrice: '€420',
-    newPrice: '€299',
+    oldPrice: '350 €',
+    newPrice: '250 €',
     items: ['Усе з пакету “Електронний”', 'Перевипуск пластику', 'Контроль отримання в Україні', 'Міжнародна доставка в руки'],
     popular: true,
   },
@@ -101,7 +101,7 @@ export default function Page() {
         <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-8 lg:p-10">
           <p className="inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-black px-4 py-1 text-xs uppercase tracking-[0.22em] text-[#D4FF00]">
             <span className="h-2 w-2 rounded-full bg-[#D4FF00]" />
-            DocExpert FinTech Legal
+            DocExpert - юридична допомога
           </p>
           <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
             Відновлення посвідчення водія дистанційно. Для українців за кордоном.
