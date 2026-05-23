@@ -1,8 +1,9 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, CreditCard, FileText, IdCard, Instagram, MapPinned, MessageCircle, Music2, Send, Timer, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { AlertTriangle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CreditCard, FileText, IdCard, Instagram, MapPinned, MessageCircle, Music2, Send, Timer, X, Zap } from 'lucide-react';
+import Image from 'next/image';
+import { useEffect, useMemo, useState } from 'react';
 
 type NavItem = { label: string; href: string; cta?: boolean };
 
@@ -86,6 +87,12 @@ function formatTime(totalSeconds: number) {
 
 const socialLinkClasses = 'rounded-full border border-neutral-700 bg-[#111111] p-2.5 text-zinc-100 transition hover:border-[#D4FF00] hover:text-[#D4FF00] hover:shadow-[0_0_20px_rgba(212,255,0,0.24)]';
 
+
+const reviewImages = Array.from({ length: 13 }, (_, i) => ({
+  src: `/reviews/review-${i + 1}.webp`,
+  alt: `Відгук клієнта DocExpert ${i + 1}`,
+}));
+
 const navItems: NavItem[] = [
   { label: 'Послуги', href: '#services' },
   { label: 'Ціни', href: '#pricing' },
@@ -100,6 +107,10 @@ export default function Page() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const [slidesToShow, setSlidesToShow] = useState(3);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 2 * 60 * 60)), 1000);
@@ -112,6 +123,30 @@ export default function Page() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth < 768) setSlidesToShow(1);
+      else if (window.innerWidth < 1200) setSlidesToShow(2);
+      else setSlidesToShow(3);
+    };
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setReviewIndex((prev) => (prev + 1) % reviewImages.length);
+    }, 3500);
+    return () => clearInterval(id);
+  }, []);
+
+  const visibleReviews = useMemo(
+    () => Array.from({ length: slidesToShow }, (_, i) => reviewImages[(reviewIndex + i) % reviewImages.length]),
+    [reviewIndex, slidesToShow],
+  );
+
 
   return (
     <main className="min-h-screen bg-[#000000] text-white">
@@ -182,9 +217,56 @@ export default function Page() {
 
       <section id="process" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-10 lg:px-10"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Як проходить процедура</h2><div className="mt-7 grid gap-4 lg:grid-cols-6">{steps.map((step, idx) => <div key={step} className="group relative rounded-2xl border border-neutral-800 bg-[#111111] p-4 transition hover:border-[#D4FF00]/50 hover:shadow-[0_0_24px_rgba(212,255,0,0.16)]"><div className="mb-3 flex items-center gap-2 text-[#D4FF00]"><Zap className="h-4 w-4" /><span className="text-xs font-semibold">Крок {idx + 1}</span></div><p className="text-sm text-zinc-200">{step}</p></div>)}</div></motion.div></section>
 
+
+      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10">
+        <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#D4FF00]/50 bg-black/60 px-3 py-1 text-xs font-semibold text-[#D4FF00]">Реальні скріншоти відгуків</span>
+              <h2 className="mt-3 text-3xl font-bold">Реальні відгуки від наших клієнтів</h2>
+              <p className="mt-2 max-w-3xl text-[#A1A1AA]">Скріншоти взяті з нашої TikTok-сторінки. Відгуки можна перевірити у профілі DocExpert.</p>
+            </div>
+            <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#D4FF00]/70 px-5 py-2.5 text-sm font-semibold text-[#D4FF00] transition hover:shadow-[0_0_22px_rgba(212,255,0,0.35)]">
+              <Music2 className="h-4 w-4" />Переглянути TikTok
+            </a>
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex gap-2">
+                <button onClick={() => setReviewIndex((prev) => (prev - 1 + reviewImages.length) % reviewImages.length)} className="rounded-full border border-neutral-700 p-2 text-zinc-200 transition hover:border-[#D4FF00] hover:text-[#D4FF00]"><ChevronLeft className="h-5 w-5" /></button>
+                <button onClick={() => setReviewIndex((prev) => (prev + 1) % reviewImages.length)} className="rounded-full border border-neutral-700 p-2 text-zinc-200 transition hover:border-[#D4FF00] hover:text-[#D4FF00]"><ChevronRight className="h-5 w-5" /></button>
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" onTouchStart={(e) => setTouchStart(e.touches[0].clientX)} onTouchEnd={(e) => { if (touchStart === null) return; const dx = e.changedTouches[0].clientX - touchStart; if (dx > 40) setReviewIndex((prev) => (prev - 1 + reviewImages.length) % reviewImages.length); if (dx < -40) setReviewIndex((prev) => (prev + 1) % reviewImages.length); setTouchStart(null); }}>
+              {visibleReviews.map((img) => (
+                <button key={img.src} onClick={() => setLightboxSrc(img.src)} className="group overflow-hidden rounded-2xl border border-[#D4FF00]/40 bg-[#111111] p-2 text-left shadow-[0_0_20px_rgba(212,255,0,0.12)] transition hover:scale-[1.01] hover:shadow-[0_0_28px_rgba(212,255,0,0.22)]">
+                  <div className="relative h-[420px] w-full">
+                    <Image src={img.src} alt={img.alt} fill className="object-contain rounded-xl" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" />
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {reviewImages.map((_, i) => (
+                <button key={i} onClick={() => setReviewIndex(i)} className={`h-2.5 w-2.5 rounded-full transition ${i === reviewIndex ? 'bg-[#D4FF00]' : 'bg-neutral-700 hover:bg-neutral-500'}`} aria-label={`Слайд ${i + 1}`} />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {lightboxSrc && (
+        <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/90 p-4" onClick={() => setLightboxSrc(null)}>
+          <button className="absolute right-4 top-4 rounded-full border border-neutral-700 p-2 text-zinc-100" onClick={() => setLightboxSrc(null)}><X className="h-5 w-5" /></button>
+          <div className="relative h-[86vh] w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <Image src={lightboxSrc} alt="Повний розмір відгуку" fill className="object-contain" sizes="100vw" />
+          </div>
+        </div>
+      )}
       <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10"><h2 className="text-3xl font-bold">Необхідні документи</h2><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">{docs.map((doc, idx) => { const Icon = [CreditCard, FileText, IdCard, FileText, MapPinned][idx] ?? FileText; return <motion.div key={doc} {...fadeInUp} transition={{ duration: 0.5, delay: idx * 0.06 }} className={`group rounded-2xl border border-neutral-800 bg-[#111111] p-5 ${idx === 0 ? 'lg:col-span-6' : 'lg:col-span-3'}`}><div className="mb-3 inline-flex rounded-full border border-neutral-700 bg-black p-2"><Icon className="h-5 w-5 text-[#D4FF00]" /></div><p className="text-zinc-100">{doc}</p></motion.div>; })}</div></section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10"><div className="grid gap-4 lg:grid-cols-12"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#111111] p-7 lg:col-span-7"><h3 className="text-2xl font-bold">Важливі нюанси</h3><ul className="mt-4 space-y-3 text-[#A1A1AA]"><li>• Посвідчення до 2014 року часто відсутні в реєстрі.</li><li>• Дія може не підтягувати посвідчення через неактуальні дані.</li><li>• Помилки бази МВС блокують процедуру.</li></ul></motion.div><motion.div {...fadeInUp} className="rounded-3xl border border-orange-900 bg-gradient-to-br from-[#1a0e0b] to-[#120808] p-7 lg:col-span-5"><h3 className="flex items-center gap-2 text-2xl font-bold text-orange-300"><Zap className="h-6 w-6 text-[#D4FF00]" />У яких випадках ми НЕ допомагаємо</h3><p className="mt-4 text-orange-100/90">Ми не займаємося виготовленням прав з нуля, додаванням категорій, відновленням після ст.130 КУпАП або підробкою документів. Лише офіційні процедури, що не вимагають складання іспитів.</p></motion.div></div></section>
+      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10"><div className="grid gap-4 lg:grid-cols-12"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#111111] p-7 lg:col-span-7"><h3 className="text-2xl font-bold">Важливі нюанси</h3><ul className="mt-4 space-y-3 text-[#A1A1AA]"><li>• Посвідчення до 2014 року часто відсутні в реєстрі.</li><li>• Дія може не підтягувати посвідчення через неактуальні дані.</li><li>• Помилки бази МВС блокують процедуру.</li></ul></motion.div><motion.div {...fadeInUp} className="group relative overflow-hidden rounded-3xl border border-orange-500/45 bg-gradient-to-br from-[#2a120d]/90 via-[#1d0f0b]/90 to-[#150a08]/90 p-6 shadow-[0_0_0_1px_rgba(251,146,60,0.24),0_0_40px_rgba(234,88,12,0.2)] transition hover:shadow-[0_0_0_1px_rgba(251,146,60,0.4),0_0_58px_rgba(249,115,22,0.3)] sm:p-7 lg:col-span-5"><div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(251,146,60,0.2),transparent_38%),linear-gradient(120deg,transparent,rgba(251,146,60,0.08),transparent)] opacity-70" /><motion.div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" animate={{ scale: [1, 1.08, 1], opacity: [0.45, 0.7, 0.45] }} transition={{ duration: 4, repeat: Infinity }} /><div className="relative"><span className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-400/45 bg-black/35 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-orange-200"><AlertTriangle className="h-4 w-4 text-orange-300" />Warning</span><h3 className="text-2xl font-black leading-tight text-orange-100 sm:text-3xl">У яких випадках ми НЕ допомагаємо</h3><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Ми працюємо виключно в межах <span className="font-semibold text-orange-300">офіційних процедур МВС України</span>.</p><p className="mt-4 text-sm font-semibold text-orange-200 sm:text-base">Ми НЕ займаємось:</p><ul className="mt-2 space-y-2 text-sm leading-relaxed text-orange-100/90 sm:text-base"><li>• виготовленням посвідчення водія з нуля</li><li>• додаванням нових категорій</li><li>• відновленням після ст.130 КУпАП</li><li>• підробкою або зміною документів</li><li>• відновленням посвідчення після офіційного обміну на європейське</li></ul><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Якщо українське посвідчення було обміняне на європейське, <span className="font-semibold text-orange-300">оригінал посвідчення</span> зазвичай відправляється назад в Україну та анулюється в системі МВС.</p><p className="mt-4 text-sm leading-relaxed text-orange-100 sm:text-base">Ми працюємо лише з <span className="font-semibold text-orange-300">офіційними процедурами</span>, які не потребують складання іспитів та не порушують законодавство.</p></div></motion.div></div></section>
 
       <section id="faq" className="mx-auto max-w-5xl scroll-mt-24 px-6 pb-10 lg:px-10"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Популярні запитання</h2><div className="mt-5 space-y-3">{faqItems.map((item, idx) => {const isOpen = openFaq === idx; return <div key={item.q} className="overflow-hidden rounded-2xl border border-neutral-800 bg-[#111111]"><button className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left" onClick={() => setOpenFaq((prev) => (prev === idx ? null : idx))}><span className="font-semibold text-zinc-100">{item.q}</span><motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>{isOpen ? <ChevronUp className="h-5 w-5 text-[#D4FF00]" /> : <ChevronDown className="h-5 w-5 text-[#D4FF00]" />}</motion.div></button><AnimatePresence initial={false}>{isOpen && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }}><p className="border-t border-neutral-800 px-5 py-4 text-[#A1A1AA]">{item.a}</p></motion.div>}</AnimatePresence></div>;})}</div></motion.div></section>
 
