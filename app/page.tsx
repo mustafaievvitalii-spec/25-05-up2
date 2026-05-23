@@ -21,6 +21,7 @@ const VIBER_URL = 'viber://chat?number=%2B380963925481';
 const INSTAGRAM_URL = 'https://www.instagram.com/pro_docs_poland';
 const TIKTOK_URL = 'https://www.tiktok.com/@documentexxpert';
 const TELEGRAM_URL = 'https://t.me/pro_docs_poland';
+const REVIEWS_TIKTOK_URL = 'https://www.tiktok.com/@documentexxpert/video/7546263722323447096';
 
 const trustBadges = [
   'Офіційна процедура',
@@ -226,7 +227,7 @@ export default function Page() {
               <h2 className="mt-3 text-3xl font-bold">Реальні відгуки від наших клієнтів</h2>
               <p className="mt-2 max-w-3xl text-[#A1A1AA]">Скріншоти взяті з нашої TikTok-сторінки. Відгуки можна перевірити у профілі DocExpert.</p>
             </div>
-            <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#D4FF00]/70 px-5 py-2.5 text-sm font-semibold text-[#D4FF00] transition hover:shadow-[0_0_22px_rgba(212,255,0,0.35)]">
+            <a href={REVIEWS_TIKTOK_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#D4FF00]/70 px-5 py-2.5 text-sm font-semibold text-[#D4FF00] transition hover:shadow-[0_0_22px_rgba(212,255,0,0.35)]">
               <Music2 className="h-4 w-4" />Переглянути TikTok
             </a>
           </div>
