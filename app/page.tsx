@@ -192,7 +192,15 @@ export default function Page() {
       <header className={`sticky top-0 z-[110] border-b border-neutral-800/60 backdrop-blur-xl transition ${isScrolled ? 'bg-black/80' : 'bg-black/45'}`}>
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 lg:px-10">
           <a href="#" className="text-sm font-semibold tracking-wide text-[#D4FF00]">DocExpert</a>
-          <nav className="hidden items-center gap-2 md:flex">
+                    <div className="mx-3 flex min-w-0 flex-1 overflow-x-auto md:hidden">
+            <div className="flex items-center gap-1.5 whitespace-nowrap pr-2 text-[11px] font-medium">
+              <a href="#services" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Послуги</a>
+              <a href="#pricing" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Ціни</a>
+              <a href="#reviews" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Відгуки</a>
+              <a href="#lead" className="rounded-full border border-[#D4FF00]/55 px-2 py-1 text-[#D4FF00] transition hover:border-[#D4FF00] hover:shadow-[0_0_12px_rgba(212,255,0,0.28)]">Заявка</a>
+            </div>
+          </div>
+<nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => (
               <a key={item.label} href={item.href} className={item.cta ? 'rounded-full bg-[#D4FF00] px-4 py-2 text-sm font-bold text-black transition hover:shadow-[0_0_20px_rgba(212,255,0,0.35)]' : 'rounded-full px-3 py-2 text-sm text-zinc-200 transition hover:text-[#D4FF00]'}>
                 {item.label}
