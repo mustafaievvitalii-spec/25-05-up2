@@ -94,7 +94,15 @@ const reviewImages = Array.from({ length: 13 }, (_, i) => ({
   alt: `Відгук клієнта DocExpert ${i + 1}`,
 }));
 
-const navItems: NavItem[] = [
+const desktopNavItems: NavItem[] = [
+  { label: 'Як працюємо', href: '#process' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Подати заявку', href: '#lead', cta: true },
+  { label: 'Верифікація посвідчення', href: '/verification' },
+  { label: 'Пластик + Доставка', href: '#plastic-delivery' },
+];
+
+const mobileMenuItems: NavItem[] = [
   { label: 'Послуги', href: '#services' },
   { label: 'Ціни', href: '#pricing' },
   { label: 'Відгуки', href: '#reviews' },
@@ -200,7 +208,7 @@ export default function Page() {
             </div>
           </div>
 <nav className="hidden items-center gap-2 md:flex">
-            {navItems.map((item) => (
+            {desktopNavItems.map((item) => (
               <a key={item.label} href={item.href} className={item.cta ? 'rounded-full bg-[#D4FF00] px-4 py-2 text-sm font-bold text-black transition hover:shadow-[0_0_20px_rgba(212,255,0,0.35)]' : 'rounded-full px-3 py-2 text-sm text-zinc-200 transition hover:text-[#D4FF00]'}>
                 {item.label}
               </a>
@@ -215,7 +223,7 @@ export default function Page() {
         {mobileOpen && (
           <nav className="border-t border-neutral-800 bg-black/90 px-6 py-3 md:hidden">
             <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
+              {mobileMenuItems.map((item) => (
                 <a key={item.label} href={item.href} onClick={() => setMobileOpen(false)} className={item.cta ? 'rounded-full bg-[#D4FF00] px-4 py-2 text-center text-sm font-bold text-black' : 'rounded-lg px-3 py-2 text-sm text-zinc-200'}>
                   {item.label}
                 </a>
