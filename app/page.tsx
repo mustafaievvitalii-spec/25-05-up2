@@ -97,11 +97,8 @@ const reviewImages = Array.from({ length: 13 }, (_, i) => ({
 const navItems: NavItem[] = [
   { label: 'Послуги', href: '#services' },
   { label: 'Ціни', href: '#pricing' },
-  { label: 'Як працюємо', href: '#process' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Подати заявку', href: '#lead', cta: true },
-  { label: 'Верифікація посвідчення', href: '/verification' },
-  { label: 'Пластик + Доставка', href: '#plastic-delivery' },
+  { label: 'Відгуки', href: '#reviews' },
+  { label: 'Залиш заявку', href: '#lead', cta: true },
 ];
 
 export default function Page() {
