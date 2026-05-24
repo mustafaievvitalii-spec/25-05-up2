@@ -214,7 +214,7 @@ export default function Page() {
         {[{ label: 'Написати у WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.55)]', color: 'text-green-400 border-green-500/70' }, { label: 'Написати у Viber', href: VIBER_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]', color: 'text-purple-400 border-purple-500/70' }, { label: 'Написати у Telegram', href: TELEGRAM_URL, icon: Send, glow: 'hover:shadow-[0_0_24px_rgba(59,130,246,0.55)]', color: 'text-blue-400 border-blue-500/70' }].map((item) => (
           <motion.a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" title={item.label} whileHover={{ y: -3, scale: 1.04 }} animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity }} className={`group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#0f0f0fcc] shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl transition ${item.color} ${item.glow}`}>
             <item.icon className="h-6 w-6" />
-            <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 group-hover:block">{item.label}</span>
+            <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 lg:group-hover:block">{item.label}</span>
           </motion.a>
         ))}
       </div>
