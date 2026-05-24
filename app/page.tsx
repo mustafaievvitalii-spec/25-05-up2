@@ -194,8 +194,7 @@ export default function Page() {
           <a href="#" className="text-sm font-semibold tracking-wide text-[#D4FF00]">DocExpert</a>
                     <div className="mx-3 flex min-w-0 flex-1 overflow-x-auto md:hidden">
             <div className="flex items-center gap-1.5 whitespace-nowrap pr-2 text-[11px] font-medium">
-              <a href="#services" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Послуги</a>
-              <a href="#pricing" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Ціни</a>
+                            <a href="#pricing" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Ціни</a>
               <a href="#reviews" className="rounded-full px-2 py-1 text-zinc-200 transition hover:text-[#D4FF00]">Відгуки</a>
               <a href="#lead" className="rounded-full border border-[#D4FF00]/55 px-2 py-1 text-[#D4FF00] transition hover:border-[#D4FF00] hover:shadow-[0_0_12px_rgba(212,255,0,0.28)]">Заявка</a>
             </div>
@@ -364,8 +363,8 @@ export default function Page() {
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" onTouchStart={(e) => setTouchStart(e.touches[0].clientX)} onTouchEnd={(e) => { if (touchStart === null) return; const dx = e.changedTouches[0].clientX - touchStart; if (dx > 40) setReviewIndex((prev) => (prev - 1 + reviewImages.length) % reviewImages.length); if (dx < -40) setReviewIndex((prev) => (prev + 1) % reviewImages.length); setTouchStart(null); }}>
               {visibleReviews.map((img, i) => (
-                <button key={img.src} onClick={() => setLightboxIndex((reviewIndex + i) % reviewImages.length)} className="group mx-auto w-full max-w-[90vw] overflow-hidden rounded-2xl border border-[#D4FF00]/40 bg-[#111111] p-1.5 text-left shadow-[0_0_20px_rgba(212,255,0,0.12)] transition hover:scale-[1.01] hover:shadow-[0_0_28px_rgba(212,255,0,0.22)] md:max-w-none md:p-2">
-                  <div className="relative h-[360px] w-full md:h-[420px]">
+                <button key={img.src} onClick={() => setLightboxIndex((reviewIndex + i) % reviewImages.length)} className="group mx-auto w-full max-w-[90vw] overflow-hidden rounded-2xl border border-[#D4FF00]/40 bg-[#111111] p-1 text-left shadow-[0_0_20px_rgba(212,255,0,0.12)] transition hover:scale-[1.01] hover:shadow-[0_0_28px_rgba(212,255,0,0.22)] md:max-w-none md:p-2">
+                  <div className="relative h-[290px] w-full md:h-[420px]">
                     <Image src={img.src} alt={img.alt} fill className="object-contain rounded-xl" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" />
                   </div>
                 </button>
