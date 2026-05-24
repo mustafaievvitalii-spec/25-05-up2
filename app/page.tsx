@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertTriangle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CreditCard, FileText, IdCard, Instagram, MapPinned, MessageCircle, Music2, Send, Timer, X, Zap } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CreditCard, FileText, Globe2, Handshake, IdCard, Instagram, MapPinned, MessageCircle, Music2, ShieldCheck, Sparkles, Timer, X, Zap } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -243,12 +243,68 @@ export default function Page() {
         </motion.div>
       </section>
 
+
+      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10">
+        <motion.div {...fadeInUp} className="grid gap-6 rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-5 sm:p-7 lg:grid-cols-2 lg:p-8">
+          <div className="relative">
+            <div className="relative h-[420px] overflow-hidden rounded-3xl border border-[#D4FF00]/35 shadow-[0_0_30px_rgba(212,255,0,0.16)] lg:h-full min-h-[420px]">
+              <Image src="/expert/vitalii-expert-mobile.webp" alt="Віталій — експерт DocExpert" fill className="object-cover lg:hidden" sizes="100vw" />
+              <Image src="/expert/vitalii-expert-desktop.webp" alt="Віталій — експерт DocExpert" fill className="hidden object-cover lg:block" sizes="50vw" />
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D7FF00]">DO CEXPERT • ЕКСПЕРТНИЙ СУПРОВІД</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">Віталій — експерт з водійських послуг для українців у Європі</h2>
+            <p className="mt-4 whitespace-pre-line text-[#A1A1AA]">Допомагаю українцям дистанційно вирішувати питання з посвідченням водія, Дією та державними реєстрами МВС.
+
+Спеціалізуюсь на офіційних процедурах без необхідності приїжджати в Україну.</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {[
+                { icon: Sparkles, text: '1000+ консультацій' },
+                { icon: Globe2, text: 'Клієнти по всій Європі' },
+                { icon: Handshake, text: 'Супровід до результату' },
+                { icon: ShieldCheck, text: 'Робота через державні реєстри' },
+              ].map((item) => (
+                <div key={item.text} className="group rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 transition hover:border-[#D4FF00]/55 hover:shadow-[0_0_22px_rgba(212,255,0,0.18)]">
+                  <item.icon className="mb-2 h-4 w-4 text-[#D7FF00]" />
+                  <p className="text-sm text-zinc-100">{item.text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#reviews" className="rounded-full bg-[#D7FF00] px-6 py-3 text-sm font-bold text-black transition hover:shadow-[0_0_24px_rgba(212,255,0,0.35)]">Переглянути відгуки</a>
+              <a href="#lead" className="rounded-full border border-[#D7FF00]/70 px-6 py-3 text-sm font-semibold text-zinc-100 transition hover:border-[#D7FF00] hover:text-[#D7FF00]">Отримати консультацію</a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10">
+        <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-6 sm:p-7">
+          <h2 className="text-3xl font-bold">Гарантії для клієнтів</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {[
+              'Працюємо офіційно',
+              'Договір про надання послуг',
+              'Оплата частинами на фірмові рахунки',
+              'Перевірка ситуації перед початком роботи',
+              'Підтримка у Telegram / WhatsApp / Viber',
+              'Супровід клієнта до результату',
+            ].map((text) => (
+              <div key={text} className="group rounded-2xl border border-neutral-800 bg-[#111111] p-4 transition hover:border-[#D7FF00]/50 hover:shadow-[0_0_22px_rgba(212,255,0,0.16)]">
+                <CheckCircle2 className="mb-2 h-5 w-5 text-[#D7FF00]" />
+                <p className="text-sm text-zinc-100">{text}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
       <section id="pricing" className="mx-auto grid max-w-7xl scroll-mt-24 grid-cols-1 gap-4 px-6 pb-10 lg:grid-cols-12 lg:px-10">{pricingPlans.map((plan, index) => <motion.article key={plan.name} {...fadeInUp} transition={{ duration: 0.55, delay: index * 0.08 }} className="group relative rounded-3xl border border-neutral-800 bg-[#111111] p-7 lg:col-span-6"><div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition group-hover:opacity-100 group-hover:shadow-[inset_0_0_0_1px_rgba(212,255,0,0.5),0_0_28px_rgba(212,255,0,0.16)]" />{plan.popular && <span className="absolute right-5 top-5 rounded-full border border-[#D4FF00]/70 px-3 py-1 text-xs text-[#D4FF00]">Популярно</span>}<h2 className="text-3xl font-bold">{plan.name}</h2><p className="mt-2 text-[#A1A1AA]">{plan.subtitle}</p><ul className="mt-5 space-y-2">{plan.items.map((item) => <li key={item} className="flex items-start gap-2 text-zinc-100"><Zap className="mt-0.5 h-5 w-5 shrink-0 text-[#D4FF00]" />{item}</li>)}</ul><div className="mt-6 flex items-end gap-3"><span className="text-xl text-zinc-500 line-through">{plan.oldPrice}</span><span className="text-4xl font-black text-[#D4FF00]">{plan.newPrice}</span></div><div className="mt-6 flex flex-wrap gap-2"><button className="rounded-full bg-[#D4FF00] px-6 py-3 font-bold text-black">Замовити</button><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-3 text-sm">WhatsApp</a><a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-3 text-sm">Viber</a>{plan.name === 'Верифікація данних в базі МВС' && <a href="/verification" className="rounded-full border border-[#D4FF00] px-4 py-3 text-sm text-[#D4FF00] transition hover:shadow-[0_0_20px_rgba(212,255,0,0.25)]">В яких ситуаціях потрібна верифікація?</a>}</div></motion.article>)}</section>
 
       <section id="process" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-10 lg:px-10"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Як проходить процедура</h2><div className="mt-7 grid gap-4 lg:grid-cols-6">{steps.map((step, idx) => <div key={step} className="group relative rounded-2xl border border-neutral-800 bg-[#111111] p-4 transition hover:border-[#D4FF00]/50 hover:shadow-[0_0_24px_rgba(212,255,0,0.16)]"><div className="mb-3 flex items-center gap-2 text-[#D4FF00]"><Zap className="h-4 w-4" /><span className="text-xs font-semibold">Крок {idx + 1}</span></div><p className="text-sm text-zinc-200">{step}</p></div>)}</div></motion.div></section>
 
 
-      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10">
+      <section id="reviews" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-10 lg:px-10">
         <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
