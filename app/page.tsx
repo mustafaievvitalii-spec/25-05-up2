@@ -110,7 +110,7 @@ export default function Page() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [reviewIndex, setReviewIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(3);
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [formData, setFormData] = useState({ name: '', code: '+380 (UA)', phone: '', country: '', situation: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -171,6 +171,17 @@ export default function Page() {
     }, 3500);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      if (e.key === 'Escape') setLightboxIndex(null);
+      if (e.key === 'ArrowLeft') setLightboxIndex((prev) => (prev === null ? 0 : (prev - 1 + reviewImages.length) % reviewImages.length));
+      if (e.key === 'ArrowRight') setLightboxIndex((prev) => (prev === null ? 0 : (prev + 1) % reviewImages.length));
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxIndex]);
 
   const visibleReviews = useMemo(
     () => Array.from({ length: slidesToShow }, (_, i) => reviewImages[(reviewIndex + i) % reviewImages.length]),
@@ -325,9 +336,9 @@ export default function Page() {
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" onTouchStart={(e) => setTouchStart(e.touches[0].clientX)} onTouchEnd={(e) => { if (touchStart === null) return; const dx = e.changedTouches[0].clientX - touchStart; if (dx > 40) setReviewIndex((prev) => (prev - 1 + reviewImages.length) % reviewImages.length); if (dx < -40) setReviewIndex((prev) => (prev + 1) % reviewImages.length); setTouchStart(null); }}>
-              {visibleReviews.map((img) => (
-                <button key={img.src} onClick={() => setLightboxSrc(img.src)} className="group overflow-hidden rounded-2xl border border-[#D4FF00]/40 bg-[#111111] p-2 text-left shadow-[0_0_20px_rgba(212,255,0,0.12)] transition hover:scale-[1.01] hover:shadow-[0_0_28px_rgba(212,255,0,0.22)]">
-                  <div className="relative h-[420px] w-full">
+              {visibleReviews.map((img, i) => (
+                <button key={img.src} onClick={() => setLightboxIndex((reviewIndex + i) % reviewImages.length)} className="group mx-auto w-full max-w-[90vw] overflow-hidden rounded-2xl border border-[#D4FF00]/40 bg-[#111111] p-1.5 text-left shadow-[0_0_20px_rgba(212,255,0,0.12)] transition hover:scale-[1.01] hover:shadow-[0_0_28px_rgba(212,255,0,0.22)] md:max-w-none md:p-2">
+                  <div className="relative h-[360px] w-full md:h-[420px]">
                     <Image src={img.src} alt={img.alt} fill className="object-contain rounded-xl" sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw" />
                   </div>
                 </button>
@@ -342,11 +353,14 @@ export default function Page() {
         </motion.div>
       </section>
 
-      {lightboxSrc && (
-        <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/90 p-4" onClick={() => setLightboxSrc(null)}>
-          <button className="absolute right-4 top-4 rounded-full border border-neutral-700 p-2 text-zinc-100" onClick={() => setLightboxSrc(null)}><X className="h-5 w-5" /></button>
+      {lightboxIndex !== null && (
+        <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/90 p-4" onClick={() => setLightboxIndex(null)}>
+          <button className="absolute right-4 top-4 rounded-full border border-neutral-700 p-2 text-zinc-100" onClick={() => setLightboxIndex(null)}><X className="h-5 w-5" /></button>
+          <button className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-neutral-700 bg-black/60 p-2 text-zinc-100" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev === null ? 0 : (prev - 1 + reviewImages.length) % reviewImages.length)); }}><ChevronLeft className="h-5 w-5" /></button>
+          <button className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-neutral-700 bg-black/60 p-2 text-zinc-100" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev === null ? 0 : (prev + 1) % reviewImages.length)); }}><ChevronRight className="h-5 w-5" /></button>
+          <div className="absolute bottom-6 rounded-full border border-neutral-700 bg-black/70 px-3 py-1 text-xs text-zinc-200">{lightboxIndex + 1} / {reviewImages.length}</div>
           <div className="relative h-[86vh] w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
-            <Image src={lightboxSrc} alt="Повний розмір відгуку" fill className="object-contain" sizes="100vw" />
+            <Image src={reviewImages[lightboxIndex].src} alt={reviewImages[lightboxIndex].alt} fill className="object-contain" sizes="100vw" />
           </div>
         </div>
       )}
