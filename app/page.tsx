@@ -118,14 +118,16 @@ export default function Page() {
 
   useEffect(() => {
     const timer = setInterval(() => setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 2 * 60 * 60)), 1000);
-  
+    return () => clearInterval(timer);
+  }, []);
+
   const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('idle');
     setIsSubmitting(true);
     try {
       const phone = `${formData.code} ${formData.phone}`.trim();
-      const res = await fetch('/api/lead', {
+      const res = await fetch('/api/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,9 +146,6 @@ export default function Page() {
       setIsSubmitting(false);
     }
   };
-
-  return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8);
