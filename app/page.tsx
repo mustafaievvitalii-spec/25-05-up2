@@ -231,26 +231,37 @@ export default function Page() {
       </div>
 
       <section id="services" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-12 pt-14 sm:pt-16 lg:px-10 lg:pb-14 lg:pt-20">
-        <motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7 sm:p-8 lg:p-12">
-          <p className="inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-black px-4 py-1 text-xs uppercase tracking-[0.22em] text-[#D4FF00]"><span className="h-2 w-2 rounded-full bg-[#D4FF00]" />DocExpert - юридична допомога</p>
-          <h1 className="mt-7 max-w-5xl text-4xl font-black leading-[1.05] sm:text-5xl lg:mt-8 lg:text-6xl">Водійські послуги для українців у Європі</h1>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Допомагаємо внести посвідчення в Дію, перевипустити пластик, виправити помилки в базі МВС та пройти офіційні процедури дистанційно.</p>
+        <motion.div {...fadeInUp} className="grid gap-8 rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10 lg:p-12">
+          <div className="lg:col-span-7">
+            <p className="inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-black px-4 py-1 text-xs uppercase tracking-[0.22em] text-[#D4FF00]"><span className="h-2 w-2 rounded-full bg-[#D4FF00]" />DocExpert - юридична допомога</p>
+            <h1 className="mt-7 max-w-5xl text-4xl font-black leading-[1.05] sm:text-5xl lg:mt-8 lg:text-6xl">Водійські послуги для українців у Європі</h1>
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Допомагаємо внести посвідчення в Дію, перевипустити пластик, виправити помилки в базі МВС та пройти офіційні процедури дистанційно.</p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a className={socialLinkClasses} href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="h-5 w-5" /></a>
-            <a className={socialLinkClasses} href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><Music2 className="h-5 w-5" /></a>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100 transition hover:bg-[#D4FF00] hover:text-black">Переглянути наші соцмережі</a>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a className={socialLinkClasses} href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="h-5 w-5" /></a>
+              <a className={socialLinkClasses} href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><Music2 className="h-5 w-5" /></a>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100 transition hover:bg-[#D4FF00] hover:text-black">Переглянути наші соцмережі</a>
+            </div>
+
+            <div className="mt-7 grid gap-3 md:grid-cols-2">{trustBadges.map((badge) => <div key={badge} className="group flex items-center gap-3 rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 transition hover:border-[#D4FF00]/60 hover:shadow-[0_0_25px_rgba(212,255,0,0.2)]"><Zap className="h-5 w-5 text-[#D4FF00]" /><span className="text-sm text-zinc-200">{badge}</span></div>)}</div>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <motion.a href="#lead" whileHover={{ scale: 1.02 }} animate={{ boxShadow: ['0 0 0px rgba(212,255,0,0.25)', '0 0 22px rgba(212,255,0,0.35)', '0 0 0px rgba(212,255,0,0.25)'] }} transition={{ duration: 2, repeat: Infinity }} className="rounded-full bg-[#D4FF00] px-7 py-3 font-bold text-black">Отримати консультацію</motion.a>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 bg-black px-6 py-3 font-medium text-white transition hover:shadow-[0_0_20px_rgba(212,255,0,0.2)]">Написати у WhatsApp</a>
+              <a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 bg-black px-6 py-3 font-medium text-white transition hover:shadow-[0_0_20px_rgba(212,255,0,0.2)]">Написати у Viber</a>
+            </div>
+
+            <a href="#pricing"><motion.div key={secondsLeft} initial={{ opacity: 0.8, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#D4FF00]/55 bg-black px-7 py-4 text-base font-semibold text-[#D4FF00] shadow-[0_0_0_1px_rgba(212,255,0,0.28),0_0_34px_rgba(212,255,0,0.30)] lg:px-9 lg:py-5 lg:text-xl"><Timer className="h-6 w-6 lg:h-7 lg:w-7" />Акційна ціна діє ще: {formatTime(secondsLeft)}</motion.div></a>
           </div>
 
-          <div className="mt-7 grid gap-3 md:grid-cols-2">{trustBadges.map((badge) => <div key={badge} className="group flex items-center gap-3 rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 transition hover:border-[#D4FF00]/60 hover:shadow-[0_0_25px_rgba(212,255,0,0.2)]"><Zap className="h-5 w-5 text-[#D4FF00]" /><span className="text-sm text-zinc-200">{badge}</span></div>)}</div>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <motion.a href="#lead" whileHover={{ scale: 1.02 }} animate={{ boxShadow: ['0 0 0px rgba(212,255,0,0.25)', '0 0 22px rgba(212,255,0,0.35)', '0 0 0px rgba(212,255,0,0.25)'] }} transition={{ duration: 2, repeat: Infinity }} className="rounded-full bg-[#D4FF00] px-7 py-3 font-bold text-black">Отримати консультацію</motion.a>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 bg-black px-6 py-3 font-medium text-white transition hover:shadow-[0_0_20px_rgba(212,255,0,0.2)]">Написати у WhatsApp</a>
-            <a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 bg-black px-6 py-3 font-medium text-white transition hover:shadow-[0_0_20px_rgba(212,255,0,0.2)]">Написати у Viber</a>
-          </div>
-
-          <a href="#pricing"><motion.div key={secondsLeft} initial={{ opacity: 0.8, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#D4FF00]/55 bg-black px-7 py-4 text-base font-semibold text-[#D4FF00] shadow-[0_0_0_1px_rgba(212,255,0,0.28),0_0_34px_rgba(212,255,0,0.30)] lg:px-9 lg:py-5 lg:text-xl"><Timer className="h-6 w-6 lg:h-7 lg:w-7" />Акційна ціна діє ще: {formatTime(secondsLeft)}</motion.div></a>
+          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.55, delay: 0.1 }} className="lg:col-span-5">
+            <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-3xl border border-[#D4FF00]/35 bg-[#111111] shadow-[0_0_30px_rgba(212,255,0,0.16)]">
+              <div className="relative h-[240px] w-full sm:h-[300px] lg:h-[420px]">
+                <Image src="/hero/driver-services-mobile.webp" alt="DocExpert: відновлення посвідчення, верифікація в МВС та доставка по Європі" fill className="object-cover lg:hidden" sizes="(max-width: 1024px) 100vw, 0px" />
+                <Image src="/hero/driver-services-hero.webp" alt="DocExpert: юридичний супровід водійських послуг для українців за кордоном" fill className="hidden object-cover lg:block" sizes="(min-width: 1024px) 40vw, 0px" />
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       </section>
 
