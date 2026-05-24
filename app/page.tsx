@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertTriangle, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CreditCard, FileText, Globe2, Handshake, IdCard, Instagram, MapPinned, MessageCircle, Music2, ShieldCheck, Sparkles, Timer, X, Zap } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CreditCard, FileText, Globe2, Handshake, IdCard, Instagram, MapPinned, MessageCircle, Music2, Send, ShieldCheck, Sparkles, Timer, X, Zap } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
