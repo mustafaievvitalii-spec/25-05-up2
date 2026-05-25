@@ -24,9 +24,9 @@ const TELEGRAM_URL = 'https://t.me/Mr_assistant01';
 const REVIEWS_TIKTOK_URL = 'https://www.tiktok.com/@documentexxpert/video/7546263722323447096';
 
 const trustBadges = [
-  'Офіційна процедура',
-  'Робота через державні реєстри',
-  'Супровід клієнтів по Європі',
+  'Внесення посвідчення в Дію',
+  'Перевипуск пластику',
+  'Виправлення помилок в базі МВС',
   'Договір про надання послуг',
 ];
 
@@ -124,6 +124,7 @@ export default function Page() {
   const [formData, setFormData] = useState({ name: '', code: '+380 (UA)', phone: '', country: '', situation: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showFloatingContacts, setShowFloatingContacts] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 2 * 60 * 60)), 1000);
@@ -182,6 +183,19 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    const reviewsSection = document.getElementById('reviews');
+    if (!reviewsSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowFloatingContacts(entry.isIntersecting),
+      { threshold: 0.2 },
+    );
+
+    observer.observe(reviewsSection);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (lightboxIndex === null) return;
       if (e.key === 'Escape') setLightboxIndex(null);
@@ -237,14 +251,18 @@ export default function Page() {
       </header>
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_10%_0%,rgba(212,255,0,0.1),transparent_30%),radial-gradient(circle_at_90%_10%,rgba(212,255,0,0.08),transparent_35%),radial-gradient(circle_at_50%_80%,rgba(212,255,0,0.06),transparent_40%)]" />
 
-      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-[120] flex flex-col gap-3 sm:right-6">
-        {[{ label: 'Написати у WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.55)]', color: 'text-green-400 border-green-500/70' }, { label: 'Написати у Viber', href: VIBER_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]', color: 'text-purple-400 border-purple-500/70' }, { label: 'Написати у Telegram', href: TELEGRAM_URL, icon: Send, glow: 'hover:shadow-[0_0_24px_rgba(59,130,246,0.55)]', color: 'text-blue-400 border-blue-500/70' }].map((item) => (
-          <motion.a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" title={item.label} whileHover={{ y: -3, scale: 1.04 }} animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity }} className={`group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#0f0f0fcc] shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl transition ${item.color} ${item.glow}`}>
-            <item.icon className="h-6 w-6" />
-            <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 lg:group-hover:block">{item.label}</span>
-          </motion.a>
-        ))}
-      </div>
+      <AnimatePresence>
+        {showFloatingContacts && (
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ duration: 0.28 }} className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-[120] flex flex-col gap-3 sm:right-6">
+            {[{ label: 'Написати у WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.55)]', color: 'text-green-400 border-green-500/70' }, { label: 'Написати у Viber', href: VIBER_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]', color: 'text-purple-400 border-purple-500/70' }, { label: 'Написати у Telegram', href: TELEGRAM_URL, icon: Send, glow: 'hover:shadow-[0_0_24px_rgba(59,130,246,0.55)]', color: 'text-blue-400 border-blue-500/70' }].map((item) => (
+              <motion.a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" title={item.label} whileHover={{ y: -3, scale: 1.04 }} animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity }} className={`group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#0f0f0fcc] shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl transition ${item.color} ${item.glow}`}>
+                <item.icon className="h-6 w-6" />
+                <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 lg:group-hover:block">{item.label}</span>
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <section id="services" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-12 pt-14 sm:pt-16 lg:px-10 lg:pb-14 lg:pt-20">
         <motion.div {...fadeInUp} className="grid gap-8 rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10 lg:p-12">
@@ -260,12 +278,10 @@ export default function Page() {
               </div>
             </div>
 
-            <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Допомагаємо внести посвідчення в Дію, перевипустити пластик, виправити помилки в базі МВС та пройти офіційні процедури дистанційно.</p>
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Ми не друкуємо посвідчення водія та не виготовляємо документи “з нуля”. Усі процедури виконуються виключно через офіційні державні сервіси України, МВС, Дію та Кабінет водія.</p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <a className={socialLinkClasses} href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="h-5 w-5" /></a>
-              <a className={socialLinkClasses} href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" aria-label="TikTok"><Music2 className="h-5 w-5" /></a>
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100 transition hover:bg-[#D4FF00] hover:text-black">Переглянути наші соцмережі</a>
+              <span className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100">Наші послуги</span>
             </div>
 
             <div className="mt-8 hidden flex-wrap gap-3 md:flex">
