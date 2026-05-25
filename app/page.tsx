@@ -140,6 +140,7 @@ export default function Page() {
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showFloatingContacts, setShowFloatingContacts] = useState(false);
+  const [showContactPopup, setShowContactPopup] = useState(false);
   const [viewPricingFired, setViewPricingFired] = useState(false);
   const [readRestrictionsFired, setReadRestrictionsFired] = useState(false);
   const [highIntentFired, setHighIntentFired] = useState(false);
@@ -147,6 +148,13 @@ export default function Page() {
   useEffect(() => {
     const timer = setInterval(() => setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 2 * 60 * 60)), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const dismissed = window.sessionStorage.getItem('doc_contact_popup_closed') === '1';
+    if (dismissed) setShowContactPopup(false);
   }, []);
 
   const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -206,7 +214,14 @@ export default function Page() {
     if (!reviewsSection) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setShowFloatingContacts(entry.isIntersecting),
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setShowFloatingContacts(true);
+        if (typeof window !== 'undefined') {
+          const dismissed = window.sessionStorage.getItem('doc_contact_popup_closed') === '1';
+          if (!dismissed) setShowContactPopup(true);
+        }
+      },
       { threshold: 0.2 },
     );
 
@@ -342,14 +357,41 @@ export default function Page() {
 
       <AnimatePresence>
         {showFloatingContacts && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ duration: 0.28 }} className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-[120] flex flex-col gap-3 sm:right-6">
-            {[{ label: 'Написати у WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.55)]', color: 'text-green-400 border-green-500/70' }, { label: 'Написати у Viber', href: VIBER_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]', color: 'text-purple-400 border-purple-500/70' }, { label: 'Написати у Telegram', href: TELEGRAM_URL, icon: Send, glow: 'hover:shadow-[0_0_24px_rgba(59,130,246,0.55)]', color: 'text-blue-400 border-blue-500/70' }].map((item) => (
-              <motion.a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" title={item.label} whileHover={{ y: -3, scale: 1.04 }} animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity }} className={`group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#0f0f0fcc] shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl transition ${item.color} ${item.glow}`}>
-                <item.icon className="h-6 w-6" />
-                <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 lg:group-hover:block">{item.label}</span>
-              </motion.a>
-            ))}
-          </motion.div>
+          <>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ duration: 0.28 }} className="fixed bottom-[max(5.2rem,env(safe-area-inset-bottom))] right-4 z-[121] w-[min(92vw,320px)] sm:right-6">
+              {showContactPopup && (
+                <div className="rounded-2xl border border-[#D4FF00]/45 bg-black/70 p-4 shadow-[0_10px_35px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <p className="text-sm font-semibold text-zinc-100">Маєш питання? Звʼяжись з нами</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowContactPopup(false);
+                        if (typeof window !== 'undefined') window.sessionStorage.setItem('doc_contact_popup_closed', '1');
+                      }}
+                      className="rounded-full border border-neutral-700 px-2 py-0.5 text-xs text-zinc-300 transition hover:border-[#D4FF00] hover:text-[#D4FF00]"
+                      aria-label="Close contact popup"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-green-500/70 px-3 py-2 text-xs text-green-300 transition hover:shadow-[0_0_16px_rgba(34,197,94,0.4)]">WhatsApp</a>
+                    <a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-purple-500/70 px-3 py-2 text-xs text-purple-300 transition hover:shadow-[0_0_16px_rgba(168,85,247,0.4)]">Viber</a>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ duration: 0.28 }} className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-[120] flex flex-col gap-3 sm:right-6">
+              {[{ label: 'Написати у WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.55)]', color: 'text-green-400 border-green-500/70' }, { label: 'Написати у Viber', href: VIBER_URL, icon: MessageCircle, glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]', color: 'text-purple-400 border-purple-500/70' }].map((item) => (
+                <motion.a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" title={item.label} whileHover={{ y: -3, scale: 1.04 }} animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity }} className={`group relative flex h-14 w-14 items-center justify-center rounded-full border bg-[#0f0f0fcc] shadow-[0_10px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl transition ${item.color} ${item.glow}`}>
+                  <item.icon className="h-6 w-6" />
+                  <span className="pointer-events-none absolute right-16 hidden whitespace-nowrap rounded-lg border border-neutral-700 bg-black/95 px-3 py-1 text-xs text-zinc-100 lg:group-hover:block">{item.label}</span>
+                </motion.a>
+              ))}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
