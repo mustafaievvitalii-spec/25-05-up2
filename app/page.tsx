@@ -86,6 +86,21 @@ function formatTime(totalSeconds: number) {
   return `${h}:${m}:${s}`;
 }
 
+
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+  }
+}
+
+const isDev = process.env.NODE_ENV !== 'production';
+
+function trackMetaEvent(eventName: string, params?: Record<string, unknown>) {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  window.fbq('trackCustom', eventName, params ?? {});
+  if (isDev) console.log('[MetaPixel]', eventName, params ?? {});
+}
+
 const socialLinkClasses = 'rounded-full border border-neutral-700 bg-[#111111] p-2.5 text-zinc-100 transition hover:border-[#D4FF00] hover:text-[#D4FF00] hover:shadow-[0_0_20px_rgba(212,255,0,0.24)]';
 
 
@@ -125,6 +140,9 @@ export default function Page() {
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showFloatingContacts, setShowFloatingContacts] = useState(false);
+  const [viewPricingFired, setViewPricingFired] = useState(false);
+  const [readRestrictionsFired, setReadRestrictionsFired] = useState(false);
+  const [highIntentFired, setHighIntentFired] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 2 * 60 * 60)), 1000);
@@ -150,6 +168,7 @@ export default function Page() {
       if (!res.ok) throw new Error('send_failed');
       setFormData({ name: '', code: '+380 (UA)', phone: '', country: '', situation: '' });
       setFormStatus('success');
+      trackMetaEvent('Lead', { source: 'form_submit_success' });
     } catch {
       setFormStatus('error');
     } finally {
@@ -205,6 +224,76 @@ export default function Page() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [lightboxIndex]);
+
+
+  useEffect(() => {
+    const pricingSection = document.getElementById('pricing');
+    if (!pricingSection) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !viewPricingFired) {
+        trackMetaEvent('ViewPricing', { source: 'scroll_pricing' });
+        setViewPricingFired(true);
+      }
+    }, { threshold: 0.25 });
+    observer.observe(pricingSection);
+    return () => observer.disconnect();
+  }, [viewPricingFired]);
+
+  useEffect(() => {
+    const restrictionsSection = document.getElementById('restrictions');
+    if (!restrictionsSection) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !readRestrictionsFired) {
+        trackMetaEvent('ReadRestrictions', { source: 'scroll_restrictions' });
+        setReadRestrictionsFired(true);
+      }
+    }, { threshold: 0.2 });
+    observer.observe(restrictionsSection);
+    return () => observer.disconnect();
+  }, [readRestrictionsFired]);
+
+  useEffect(() => {
+    if (highIntentFired) return;
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      const progress = window.scrollY / max;
+      if (progress >= 0.75) {
+        trackMetaEvent('HighIntentUser', { source: 'scroll_75' });
+        setHighIntentFired(true);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const t = window.setTimeout(() => {
+      if (!highIntentFired) {
+        trackMetaEvent('HighIntentUser', { source: 'time_60s' });
+        setHighIntentFired(true);
+      }
+    }, 60000);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(t);
+    };
+  }, [highIntentFired]);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest('a') as HTMLAnchorElement | null;
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      if (!viewPricingFired && (href === '#pricing' || href.includes('#pricing') || href === '#lead' || link.closest('#pricing'))) {
+        trackMetaEvent('ViewPricing', { source: 'click_pricing_or_order' });
+        setViewPricingFired(true);
+      }
+      if (href.startsWith('https://wa.me') || href.startsWith('viber://') || href.startsWith('https://t.me') || href.startsWith('tel:')) {
+        trackMetaEvent('Contact', { channel: href.startsWith('https://wa.me') ? 'whatsapp' : href.startsWith('viber://') ? 'viber' : href.startsWith('https://t.me') ? 'telegram' : 'phone' });
+      }
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, [viewPricingFired]);
 
   const visibleReviews = useMemo(
     () => Array.from({ length: slidesToShow }, (_, i) => reviewImages[(reviewIndex + i) % reviewImages.length]),
@@ -419,9 +508,9 @@ export default function Page() {
       )}
       <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10"><h2 className="text-3xl font-bold">Необхідні документи для верифікації посвідчення водія</h2><div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">{docs.map((doc, idx) => { const Icon = [CreditCard, FileText, IdCard, FileText, MapPinned][idx] ?? FileText; return <motion.div key={doc} {...fadeInUp} transition={{ duration: 0.5, delay: idx * 0.06 }} className={`group rounded-2xl border border-neutral-800 bg-[#111111] p-5 ${idx === 0 ? 'lg:col-span-6' : 'lg:col-span-3'}`}><div className="mb-3 inline-flex rounded-full border border-neutral-700 bg-black p-2"><Icon className="h-5 w-5 text-[#D4FF00]" /></div><p className="text-zinc-100">{doc}</p></motion.div>; })}</div></section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-10 lg:px-10"><div className="grid gap-4 lg:grid-cols-12"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#111111] p-7 lg:col-span-7"><h3 className="text-2xl font-bold">Важливі нюанси</h3><ul className="mt-4 space-y-3 text-[#A1A1AA]"><li>• Посвідчення до 2014 року часто відсутні в реєстрі.</li><li>• Дія може не підтягувати посвідчення через неактуальні дані.</li><li>• Помилки бази МВС блокують процедуру.</li></ul></motion.div><motion.div {...fadeInUp} className="group relative overflow-hidden rounded-3xl border border-orange-500/45 bg-gradient-to-br from-[#2a120d]/90 via-[#1d0f0b]/90 to-[#150a08]/90 p-6 shadow-[0_0_0_1px_rgba(251,146,60,0.24),0_0_40px_rgba(234,88,12,0.2)] transition hover:shadow-[0_0_0_1px_rgba(251,146,60,0.4),0_0_58px_rgba(249,115,22,0.3)] sm:p-7 lg:col-span-5"><div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(251,146,60,0.2),transparent_38%),linear-gradient(120deg,transparent,rgba(251,146,60,0.08),transparent)] opacity-70" /><motion.div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" animate={{ scale: [1, 1.08, 1], opacity: [0.45, 0.7, 0.45] }} transition={{ duration: 4, repeat: Infinity }} /><div className="relative"><span className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-400/45 bg-black/35 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-orange-200"><AlertTriangle className="h-4 w-4 text-orange-300" />Warning</span><h3 className="text-2xl font-black leading-tight text-orange-100 sm:text-3xl">У яких випадках ми НЕ допомагаємо</h3><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Ми працюємо виключно в межах <span className="font-semibold text-orange-300">офіційних процедур МВС України</span>.</p><p className="mt-4 text-sm font-semibold text-orange-200 sm:text-base">Ми НЕ займаємось:</p><ul className="mt-2 space-y-2 text-sm leading-relaxed text-orange-100/90 sm:text-base"><li>• виготовленням посвідчення водія з нуля</li><li>• додаванням нових категорій</li><li>• відновленням після ст.130 КУпАП</li><li>• підробкою або зміною документів</li><li>• відновленням посвідчення після офіційного обміну на європейське</li></ul><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Якщо українське посвідчення було обміняне на європейське, <span className="font-semibold text-orange-300">оригінал посвідчення</span> зазвичай відправляється назад в Україну та анулюється в системі МВС.</p><p className="mt-4 text-sm leading-relaxed text-orange-100 sm:text-base">Ми працюємо лише з <span className="font-semibold text-orange-300">офіційними процедурами</span>, які не потребують складання іспитів та не порушують законодавство.</p></div></motion.div></div></section>
+      <section id="restrictions" className="mx-auto max-w-7xl scroll-mt-24 px-6 pb-10 lg:px-10"><div className="grid gap-4 lg:grid-cols-12"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#111111] p-7 lg:col-span-7"><h3 className="text-2xl font-bold">Важливі нюанси</h3><ul className="mt-4 space-y-3 text-[#A1A1AA]"><li>• Посвідчення до 2014 року часто відсутні в реєстрі.</li><li>• Дія може не підтягувати посвідчення через неактуальні дані.</li><li>• Помилки бази МВС блокують процедуру.</li></ul></motion.div><motion.div {...fadeInUp} className="group relative overflow-hidden rounded-3xl border border-orange-500/45 bg-gradient-to-br from-[#2a120d]/90 via-[#1d0f0b]/90 to-[#150a08]/90 p-6 shadow-[0_0_0_1px_rgba(251,146,60,0.24),0_0_40px_rgba(234,88,12,0.2)] transition hover:shadow-[0_0_0_1px_rgba(251,146,60,0.4),0_0_58px_rgba(249,115,22,0.3)] sm:p-7 lg:col-span-5"><div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(251,146,60,0.2),transparent_38%),linear-gradient(120deg,transparent,rgba(251,146,60,0.08),transparent)] opacity-70" /><motion.div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" animate={{ scale: [1, 1.08, 1], opacity: [0.45, 0.7, 0.45] }} transition={{ duration: 4, repeat: Infinity }} /><div className="relative"><span className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-400/45 bg-black/35 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-orange-200"><AlertTriangle className="h-4 w-4 text-orange-300" />Warning</span><h3 className="text-2xl font-black leading-tight text-orange-100 sm:text-3xl">У яких випадках ми НЕ допомагаємо</h3><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Ми працюємо виключно в межах <span className="font-semibold text-orange-300">офіційних процедур МВС України</span>.</p><p className="mt-4 text-sm font-semibold text-orange-200 sm:text-base">Ми НЕ займаємось:</p><ul className="mt-2 space-y-2 text-sm leading-relaxed text-orange-100/90 sm:text-base"><li>• виготовленням посвідчення водія з нуля</li><li>• додаванням нових категорій</li><li>• відновленням після ст.130 КУпАП</li><li>• підробкою або зміною документів</li><li>• відновленням посвідчення після офіційного обміну на європейське</li></ul><p className="mt-4 text-sm leading-relaxed text-orange-100/90 sm:text-base">Якщо українське посвідчення було обміняне на європейське, <span className="font-semibold text-orange-300">оригінал посвідчення</span> зазвичай відправляється назад в Україну та анулюється в системі МВС.</p><p className="mt-4 text-sm leading-relaxed text-orange-100 sm:text-base">Ми працюємо лише з <span className="font-semibold text-orange-300">офіційними процедурами</span>, які не потребують складання іспитів та не порушують законодавство.</p></div></motion.div></div></section>
 
-      <section id="faq" className="mx-auto max-w-5xl scroll-mt-24 px-6 pb-10 lg:px-10"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Популярні запитання</h2><div className="mt-5 space-y-3">{faqItems.map((item, idx) => {const isOpen = openFaq === idx; return <div key={item.q} className="overflow-hidden rounded-2xl border border-neutral-800 bg-[#111111]"><button className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left" onClick={() => setOpenFaq((prev) => (prev === idx ? null : idx))}><span className="font-semibold text-zinc-100">{item.q}</span><motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>{isOpen ? <ChevronUp className="h-5 w-5 text-[#D4FF00]" /> : <ChevronDown className="h-5 w-5 text-[#D4FF00]" />}</motion.div></button><AnimatePresence initial={false}>{isOpen && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }}><p className="border-t border-neutral-800 px-5 py-4 text-[#A1A1AA]">{item.a}</p></motion.div>}</AnimatePresence></div>;})}</div></motion.div></section>
+      <section id="faq" className="mx-auto max-w-5xl scroll-mt-24 px-6 pb-10 lg:px-10"><motion.div {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Популярні запитання</h2><div className="mt-5 space-y-3">{faqItems.map((item, idx) => {const isOpen = openFaq === idx; return <div key={item.q} className="overflow-hidden rounded-2xl border border-neutral-800 bg-[#111111]"><button className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left" onClick={() => { const next = openFaq === idx ? null : idx; if (next !== null) trackMetaEvent('OpenFAQ', { question: item.q }); setOpenFaq(next); }}><span className="font-semibold text-zinc-100">{item.q}</span><motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>{isOpen ? <ChevronUp className="h-5 w-5 text-[#D4FF00]" /> : <ChevronDown className="h-5 w-5 text-[#D4FF00]" />}</motion.div></button><AnimatePresence initial={false}>{isOpen && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }}><p className="border-t border-neutral-800 px-5 py-4 text-[#A1A1AA]">{item.a}</p></motion.div>}</AnimatePresence></div>;})}</div></motion.div></section>
 
       <section id="lead" className="mx-auto max-w-5xl scroll-mt-24 px-6 pb-12 lg:px-10"><motion.form onSubmit={submitLead} {...fadeInUp} className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7"><h2 className="text-3xl font-bold">Залиште заявку</h2><p className="mt-2 text-[#A1A1AA]">Після заявки ми безкоштовно перевіримо вашу ситуацію у межах офіційної процедури.</p><div className="mt-4 flex flex-wrap items-center gap-3"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={socialLinkClasses}><Instagram className="h-5 w-5" /></a><a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" className={socialLinkClasses}><Music2 className="h-5 w-5" /></a><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={socialLinkClasses}><MessageCircle className="h-5 w-5" /></a><a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className={socialLinkClasses}><MessageCircle className="h-5 w-5" /></a><a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={socialLinkClasses}><Send className="h-5 w-5" /></a><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm transition hover:bg-[#D4FF00] hover:text-black">Переглянути наші соцмережі</a></div><div className="mt-6 grid gap-4 sm:grid-cols-2"><label className="flex flex-col gap-2 sm:col-span-2"><span className="text-sm text-zinc-300">Ваше ім&apos;я</span><input required value={formData.name} onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))} type="text" placeholder="Введіть ваше ім'я" className="rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 text-white outline-none transition focus:border-[#D4FF00]/70" /></label><label className="flex flex-col gap-2"><span className="text-sm text-zinc-300">Код країни</span><select value={formData.code} onChange={(e) => setFormData((p) => ({ ...p, code: e.target.value }))} className="rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 text-white outline-none transition focus:border-[#D4FF00]/70"><option>+380 (UA)</option><option>+48 (PL)</option><option>+49 (DE)</option><option>+420 (CZ)</option><option>+39 (IT)</option></select></label><label className="flex flex-col gap-2"><span className="text-sm text-zinc-300">Номер телефону</span><input required value={formData.phone} onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))} type="tel" placeholder="XX XXX XX XX" className="rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 text-white outline-none transition focus:border-[#D4FF00]/70" /></label><label className="flex flex-col gap-2 sm:col-span-2"><span className="text-sm text-zinc-300">Країна перебування зараз</span><input required value={formData.country} onChange={(e) => setFormData((p) => ({ ...p, country: e.target.value }))} type="text" placeholder="Наприклад: Польща" className="rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 text-white outline-none transition focus:border-[#D4FF00]/70" /></label><label className="flex flex-col gap-2 sm:col-span-2"><span className="text-sm text-zinc-300">Ситуація</span><textarea value={formData.situation} onChange={(e) => setFormData((p) => ({ ...p, situation: e.target.value }))} placeholder="Коротко опишіть вашу ситуацію" className="min-h-[110px] rounded-2xl border border-neutral-800 bg-[#111111] px-4 py-3 text-white outline-none transition focus:border-[#D4FF00]/70" /></label></div><div className="mt-3">{formStatus === 'success' && <p className="text-sm text-lime-300">Заявку успішно відправлено</p>}{formStatus === 'error' && <p className="text-sm text-red-300">Помилка відправки заявки</p>}</div><div className="mt-6 flex flex-wrap gap-3"><button disabled={isSubmitting} type="submit" className="rounded-full bg-[#D4FF00] px-6 py-3 font-bold text-black transition hover:shadow-[0_0_30px_rgba(212,255,0,0.35)] disabled:opacity-70">{isSubmitting ? 'Відправка...' : 'Залишити заявку на безкоштовну перевірку'}</button><a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-6 py-3">Написати у WhatsApp</a><a href={VIBER_URL} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#D4FF00]/70 px-6 py-3">Написати у Viber</a></div></motion.form></section>
 
