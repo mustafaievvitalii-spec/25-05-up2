@@ -113,11 +113,11 @@ export default function SituationsPage() {
     <main className="min-h-screen bg-black text-white">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_10%_0%,rgba(212,255,0,0.1),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(212,255,0,0.06),transparent_35%)]" />
 
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-10 lg:px-10">
-        <a href="/" className="inline-flex items-center gap-2 rounded-full border border-neutral-700 px-4 py-2 text-sm text-zinc-200 transition hover:border-[#D4FF00] hover:text-[#D4FF00]"><ArrowLeft className="h-4 w-4" />Повернутися на головну</a>
-      </section>
+      <div className="fixed left-4 top-4 z-[130] sm:left-6">
+        <a href="/" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#D4FF00]/55 bg-black/70 px-4 py-2 text-sm font-medium text-zinc-100 backdrop-blur-md transition hover:border-[#D4FF00] hover:text-[#D4FF00] hover:shadow-[0_0_18px_rgba(212,255,0,0.28)]"><ArrowLeft className="h-4 w-4" />← На головну</a>
+      </div>
 
-      <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-10">
+      <section className="mx-auto max-w-7xl px-6 pb-12 pt-20 lg:px-10">
         <div className="rounded-3xl border border-neutral-800 bg-[#0A0A0A] p-7 lg:p-10">
           <h1 className="text-3xl font-black sm:text-5xl">В яких ситуаціях ми можемо допомогти</h1>
           <p className="mt-4 max-w-5xl text-[#A1A1AA] sm:text-lg">DocExpert надає консультаційно-організаційні послуги для українців за кордоном у питаннях водійських документів, перевипуску посвідчення та роботи з державними сервісами України.</p>
