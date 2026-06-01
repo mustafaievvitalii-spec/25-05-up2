@@ -412,7 +412,7 @@ export default function Page() {
             <p className="mt-5 max-w-3xl text-base leading-relaxed text-[#A1A1AA] sm:text-lg lg:mt-6">Ми не друкуємо посвідчення водія та не виготовляємо документи “з нуля”. Усі процедури виконуються виключно через офіційні державні сервіси України, МВС, Дію та Кабінет водія.</p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="/verification" onClick={() => trackMetaEvent('ClickFreeInstruction')} className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100 transition hover:bg-[#D4FF00] hover:text-black">Безкоштовна інструкція: як верифікувати права самостійно</a>
+              <motion.a href="/verification" onClick={() => trackMetaEvent('ClickFreeInstruction')} whileHover={{ scale: 1.02 }} animate={{ boxShadow: ['0 0 0px rgba(212,255,0,0.16)', '0 0 20px rgba(212,255,0,0.28)', '0 0 0px rgba(212,255,0,0.16)'] }} transition={{ duration: 2.4, repeat: Infinity }} className="rounded-full border border-[#D4FF00]/70 px-4 py-2 text-sm text-zinc-100 transition hover:bg-[#D4FF00] hover:text-black">Безкоштовна інструкція: як верифікувати права самостійно</motion.a>
             </div>
 
             <div className="mt-8 hidden flex-wrap gap-3 md:flex">
