@@ -42,6 +42,37 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         {children}
+        <section className="border-t border-neutral-900 bg-black px-4 py-8 sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-7xl rounded-3xl border border-[#D4FF00]/20 bg-[#0A0A0A]/90 p-5 shadow-[0_0_35px_rgba(212,255,0,0.08)] backdrop-blur sm:p-6 lg:p-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#D4FF00]">
+              Юридична інформація
+            </p>
+            <div className="mt-5 grid gap-4 text-sm leading-relaxed text-zinc-400 md:grid-cols-2 lg:grid-cols-4">
+              <p>
+                <span className="block font-semibold text-zinc-100">Document Expert</span>
+              </p>
+              <p>
+                Послуги надає{' '}
+                <span className="font-medium text-zinc-100">ФОП Мустафаєв Віталій Русланович</span>
+              </p>
+              <p>
+                Адреса:{' '}
+                <span className="text-zinc-200">
+                  35350, Рівненська область, смт Квасилів, вул. Давня 63
+                </span>
+              </p>
+              <p>
+                Телефон:{' '}
+                <a
+                  href="tel:+380680513251"
+                  className="font-semibold text-zinc-100 transition hover:text-[#D4FF00]"
+                >
+                  +380680513251
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
       </body>
     </html>
   );
