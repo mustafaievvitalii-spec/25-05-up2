@@ -2,7 +2,19 @@ import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Публічна оферта | DocExpert',
+  "title": "Публічна оферта | DocExpert",
+  "description": "Умови надання консультаційних і супровідних послуг DocExpert, права та обов’язки сторін.",
+  "alternates": {
+    "canonical": "/public-offer"
+  },
+  "openGraph": {
+    "title": "Публічна оферта | DocExpert",
+    "description": "Умови надання консультаційних і супровідних послуг DocExpert, права та обов’язки сторін.",
+    "url": "/public-offer",
+    "siteName": "DocExpert",
+    "locale": "uk_UA",
+    "type": "website"
+  }
 };
 
 export default function PublicOfferPage() {

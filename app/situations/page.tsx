@@ -2,7 +2,19 @@ import { AlertTriangle, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'В яких ситуаціях ми можемо допомогти | DocExpert',
+  "title": "Проблеми з посвідченням водія та Дією | DocExpert",
+  "description": "Посвідчення не відображається в Дії, помилки в даних або відмова в онлайн-послузі: ситуації, з якими можна звернутися до DocExpert.",
+  "alternates": {
+    "canonical": "/situations"
+  },
+  "openGraph": {
+    "title": "Проблеми з посвідченням водія та Дією | DocExpert",
+    "description": "Посвідчення не відображається в Дії, помилки в даних або відмова в онлайн-послузі: ситуації, з якими можна звернутися до DocExpert.",
+    "url": "/situations",
+    "siteName": "DocExpert",
+    "locale": "uk_UA",
+    "type": "website"
+  }
 };
 
 const WHATSAPP_URL = 'https://wa.me/380963925481';

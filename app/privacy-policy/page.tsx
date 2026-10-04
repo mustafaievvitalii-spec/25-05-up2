@@ -2,7 +2,19 @@ import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Політика конфіденційності | DocExpert',
+  "title": "Політика конфіденційності | DocExpert",
+  "description": "Як DocExpert обробляє та захищає персональні дані відвідувачів сайту й клієнтів.",
+  "alternates": {
+    "canonical": "/privacy-policy"
+  },
+  "openGraph": {
+    "title": "Політика конфіденційності | DocExpert",
+    "description": "Як DocExpert обробляє та захищає персональні дані відвідувачів сайту й клієнтів.",
+    "url": "/privacy-policy",
+    "siteName": "DocExpert",
+    "locale": "uk_UA",
+    "type": "website"
+  }
 };
 
 export default function PrivacyPolicyPage() {
