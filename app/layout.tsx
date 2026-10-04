@@ -3,6 +3,7 @@ import Script from 'next/script';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://docexpert.company'),
   title: 'DocExpert — Відновлення посвідчення водія дистанційно',
   description:
     'Юридичний супровід дистанційного відновлення посвідчення водія для українців за кордоном.',

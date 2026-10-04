@@ -2,7 +2,19 @@ import { AlertTriangle, ArrowLeft, CheckCircle2, Send, ShieldCheck } from 'lucid
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'В яких ситуаціях ми можемо допомогти | DocExpert',
+  "title": "Допомога з обміном і доставкою посвідчення водія | DocExpert",
+  "description": "Ситуації з обміном, отриманням і доставкою українського посвідчення водія за кордон. Дізнайтеся про можливості та обмеження супроводу DocExpert.",
+  "alternates": {
+    "canonical": "/cases"
+  },
+  "openGraph": {
+    "title": "Допомога з обміном і доставкою посвідчення водія | DocExpert",
+    "description": "Ситуації з обміном, отриманням і доставкою українського посвідчення водія за кордон. Дізнайтеся про можливості та обмеження супроводу DocExpert.",
+    "url": "/cases",
+    "siteName": "DocExpert",
+    "locale": "uk_UA",
+    "type": "website"
+  }
 };
 
 const WHATSAPP_URL = 'https://wa.me/380963925481';
